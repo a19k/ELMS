@@ -3,8 +3,10 @@ package models;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import controller.MongoDBController;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import javax.swing.JTextField;
 import java.lang.reflect.Field;
@@ -17,7 +19,7 @@ public class EmployeeService {
 
     public EmployeeService() {
         this.database = MongoDBController.getInstance().getDatabase();
-        this.collection = database.getCollection("employees");
+        this.collection = database.getCollection("Employees");
     }
 
     public void addEmployee(Employee employee, JTextField passwordTextField) {
@@ -57,6 +59,17 @@ public class EmployeeService {
         }
         System.out.println("Employees fetched");
         return employees;
+    }
+
+    public String findOneEmployee(String username){
+
+        Bson filter = Filters.eq("username", username);
+        Bson projection = Projections.fields(Projections.include("password"), Projections.excludeId());
+        Document doc = collection.find(filter).projection(projection).first();
+
+        if(doc==null) return null;
+        else
+        return doc.getString("password");
     }
 
 

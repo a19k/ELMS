@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
 public class loginForm {
@@ -44,8 +45,24 @@ public class loginForm {
                 String username = usernameTextField.getText();
                 char[] password = passwordField.getPassword();
 
-                //List<Employee> employees = empService.getAllEmployees();
+                String truePassword = empService.findOneEmployee(username);
 
+                if(truePassword==null){
+                    JOptionPane.showMessageDialog(null,"User does not exist!");
+                    usernameTextField.setText("");
+                    usernameTextField.grabFocus();
+                }
+                else if(!truePassword.equals(String.valueOf(password))) {
+                    JOptionPane.showMessageDialog(null, "Password is incorrect!");
+                    passwordField.setText("");
+                    passwordField.grabFocus();
+                }
+                else{
+                    Arrays.fill(password, (char) 0);
+
+                    //open next form
+                    System.out.println("hahahha");
+                }
 
 
             }
