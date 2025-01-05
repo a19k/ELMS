@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="mongodb.driver.sync" level="application" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="formdev.flatlaf.fonts.jetbrains.mono" level="project" />
   </component>
 </module>

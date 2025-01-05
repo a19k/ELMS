@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="views.loginForm">
+  <grid id="27dc6" binding="loginPanel" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <background color="-13947599"/>
+      <font name="SansSerif" size="18" style="0"/>
+      <maximumSize width="344" height="305"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <vspacer id="859cd">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <vspacer id="e8bf2">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <hspacer id="f636d">
+        <constraints>
+          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="a465c">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="8da3e">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="80233">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <grid id="b7dcf" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="20" vgap="20">
+        <margin top="20" left="20" bottom="20" right="20"/>
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-14473944"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="de107" class="javax.swing.JTextField" binding="usernameTextField">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="300" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono" size="18" style="0"/>
+              <foreground color="-16777216"/>
+            </properties>
+          </component>
+          <component id="55f6e" class="javax.swing.JPasswordField" binding="passwordField">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="300" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono" size="18" style="0"/>
+              <foreground color="-16777216"/>
+            </properties>
+          </component>
+          <component id="afab6" class="javax.swing.JLabel" binding="loginLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono" size="20" style="0"/>
+              <foreground color="-2104860"/>
+              <text value="Log in"/>
+            </properties>
+          </component>
+          <component id="c03ab" class="javax.swing.JLabel" binding="passwordLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono" size="16" style="0"/>
+              <foreground color="-2104860"/>
+              <labelFor value="55f6e"/>
+              <text value="Password"/>
+            </properties>
+          </component>
+          <component id="5b1bd" class="javax.swing.JLabel" binding="usernameLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono" size="16" style="0"/>
+              <foreground color="-2104860"/>
+              <labelFor value="de107"/>
+              <text value="Username"/>
+            </properties>
+          </component>
+          <component id="38b37" class="javax.swing.JButton" binding="logInButton" default-binding="true">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-13947599"/>
+              <borderPainted value="false"/>
+              <contentAreaFilled value="true"/>
+              <focusPainted value="false"/>
+              <font name="JetBrains Mono" size="16" style="0"/>
+              <foreground color="-2104860"/>
+              <text value="log in"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
