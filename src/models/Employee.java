@@ -11,6 +11,10 @@ public class Employee {
     private String manager_id;
     private int leaveBalance;
 
+    public static String ROLE_ADMIN = "admin";
+    public static String ROLE_MANAGER = "manager";
+    public static String ROLE_EMPLOYEE = "employee";
+
     public Employee(String username, String password, String name, String role, String manager_id, int leaveBalance){
         if(username==null || username.isBlank()){
             throw new IllegalArgumentException("Username cannot be empty!");
@@ -18,7 +22,7 @@ public class Employee {
             throw new IllegalArgumentException("Password cannot be empty!");
         }if(name==null || name.isBlank()){
             throw new IllegalArgumentException("Name cannot be empty!");
-        }if(role==null || role.isBlank() || !(role.matches("employee") || role.matches("manager") || role.matches("admin"))){
+        }if(role==null || role.isBlank() || !(role.matches(ROLE_EMPLOYEE) || role.matches(ROLE_MANAGER) || role.matches(ROLE_ADMIN))){
             throw new IllegalArgumentException("Role must be one of the following: employee, manager, admin");
         }if(manager_id==null || manager_id.isBlank()){
             throw new IllegalArgumentException("Manager ID cannot be empty!");
@@ -43,6 +47,10 @@ public class Employee {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getName() {
         return name;
     }
@@ -56,7 +64,7 @@ public class Employee {
     }
 
     public void setRole(String role) {
-        if(role==null || role.isBlank() || !(role.matches("employee") || role.matches("manager") || role.matches("admin")))
+        if(role==null || role.isBlank() || !(role.matches(ROLE_EMPLOYEE) || role.matches(ROLE_MANAGER) || role.matches(ROLE_ADMIN)))
             throw new IllegalArgumentException("Role must be one of the following: employee, manager, admin");
         this.role = role;
     }

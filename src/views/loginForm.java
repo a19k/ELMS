@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.List;
 
 public class loginForm {
     private JPanel loginPanel;
@@ -21,8 +20,8 @@ public class loginForm {
     private JLabel passwordLabel;
     private JButton logInButton;
 
-    public loginForm(){;
-        FlatJetBrainsMonoFont.install();
+    public loginForm(JFrame frame){;
+        FlatJetBrainsMonoFont.install();//custom font, 3 sizes
         Font customFont20 = new Font("JetBrains Mono", Font.PLAIN,20);
         Font customFont18 = new Font("JetBrains Mono", Font.PLAIN,18);
         Font customFont16 = new Font("JetBrains Mono", Font.PLAIN,16);
@@ -33,45 +32,61 @@ public class loginForm {
         passwordField.setFont(customFont18);
         logInButton.setFont(customFont18);
 
-        usernameTextField.setBorder(new EmptyBorder(2,5,2,5));
-        passwordField.setBorder(new EmptyBorder(2,5,2,5));
+        usernameTextField.setBorder(new EmptyBorder(2,5,2,5));//eliminates weird border and
+        passwordField.setBorder(new EmptyBorder(2,5,2,5));//separates the text from the border with insets
 
-        EmployeeService empService = new EmployeeService();
+        EmployeeService empService = new EmployeeService();//service to Employees collection
 
-        logInButton.addActionListener(new ActionListener() {
+        logInButton.addActionListener(new ActionListener() {//login button pressed
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 String username = usernameTextField.getText();
-                char[] password = passwordField.getPassword();
+                char[] password = passwordField.getPassword();//password input from user
 
-                String truePassword = empService.findOneEmployee(username);
+                Employee employee = empService.findOneEmployee(username);//find employee by username
 
-                if(truePassword==null){
+
+                if(employee==null){//if no fitting document was found
                     JOptionPane.showMessageDialog(null,"User does not exist!");
-                    usernameTextField.setText("");
-                    usernameTextField.grabFocus();
+                    usernameTextField.setText("");//empties the text field and
+                    usernameTextField.grabFocus();//focuses on it
+                    return;
                 }
-                else if(!truePassword.equals(String.valueOf(password))) {
+
+                String truePassword = employee.getPassword();//password in db
+                if(!truePassword.equals(String.valueOf(password))) {//if passwords are not the same
                     JOptionPane.showMessageDialog(null, "Password is incorrect!");
-                    passwordField.setText("");
-                    passwordField.grabFocus();
+                    passwordField.setText("");//empties the password field and
+                    passwordField.grabFocus();//focuses on it
                 }
-                else{
-                    Arrays.fill(password, (char) 0);
+                else{//if user exists and password is correct
+                    Arrays.fill(password, (char) 0);//burn the evidence
 
                     //open next form
-                    System.out.println("hahahha");
+                    switch (employee.getRole()) {
+                        case "employee":
+                            //open leaveRequestCreation form
+                            employeeForm.main(null);
+                            break;
+                        case "manager":
+                            //open leaveRequestReview/employeeList/leaveRequestList form
+                            managerForm.main(null);
+                            break;
+                        case "admin":
+                            //open input/employeeList/leaveRequestList form
+                            adminForm.main(null);
+                            break;
+                        default:throw new IllegalArgumentException("Illegal role found in database: "+employee.getRole()+" employee, manager or admin expected!");
+                    }
                 }
-
-
             }
         });
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("loginForm");
-        frame.setContentPane(new loginForm().loginPanel);
+        frame.setContentPane(new loginForm(frame).loginPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

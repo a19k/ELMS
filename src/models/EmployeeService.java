@@ -18,12 +18,12 @@ public class EmployeeService {
     private final MongoCollection<Document> collection;
 
     public EmployeeService() {
-        this.database = MongoDBController.getInstance().getDatabase();
-        this.collection = database.getCollection("Employees");
+        this.database = MongoDBController.getInstance().getDatabase();//db
+        this.collection = database.getCollection("Employees");//collection/entity/table
     }
 
     public void addEmployee(Employee employee, JTextField passwordTextField) {
-        Document employeeDoc = new Document("_id", employee.getId())
+        Document employeeDoc = new Document("_id", employee.getId())//converts Employee object into Document
                 .append("username", employee.getUsername())
                 .append("password", passwordTextField.getText())
                 .append("name", employee.getName())
@@ -36,7 +36,7 @@ public class EmployeeService {
 
     public List<Employee> getAllEmployees() {
         List<Employee> employees = new ArrayList<>();
-        for (Document doc : collection.find()) {
+        for (Document doc : collection.find()) {//for every Employee in db as a document, separate into variables
             String id = doc.getString("_id");
             String username = doc.getString("username");
             String password = doc.getString("password");
@@ -45,9 +45,9 @@ public class EmployeeService {
             String manager_id = doc.getString("manager_id");
             int leaveBalance = doc.getInteger("leaveBalance");
 
-            Employee employee = new Employee(username,password,name,role,manager_id,leaveBalance);
+            Employee employee = new Employee(username,password,name,role,manager_id,leaveBalance);//create Employee object from variables
 
-            try {
+            try {//overwrite the auto-assigned id with already existing(real) id
                 Field idField = Employee.class.getDeclaredField("id");
                 idField.setAccessible(true);
                 idField.set(employee, id);
@@ -58,18 +58,27 @@ public class EmployeeService {
             employees.add(employee);
         }
         System.out.println("Employees fetched");
-        return employees;
+        return employees;//return the List of all Employees
     }
 
-    public String findOneEmployee(String username){
+    public Employee findOneEmployee(String filteringUsername){
 
-        Bson filter = Filters.eq("username", username);
-        Bson projection = Projections.fields(Projections.include("password"), Projections.excludeId());
-        Document doc = collection.find(filter).projection(projection).first();
+        Bson filter = Filters.eq("username", filteringUsername);//filter by username
+        Document doc = collection.find(filter).first();//find first ocurrence
 
-        if(doc==null) return null;
-        else
-        return doc.getString("password");
+        if(doc==null)return null;//not found
+
+        String id = doc.getString("_id");
+        String username = doc.getString("username");
+        String password = doc.getString("password");
+        String name = doc.getString("name");
+        String role = doc.getString("role");
+        String manager_id = doc.getString("manager_id");
+        int leaveBalance = doc.getInteger("leaveBalance");
+
+        Employee employee = new Employee(username,password,name,role,manager_id,leaveBalance);//create Employee object from variables
+
+        return employee;
     }
 
 
