@@ -22,10 +22,10 @@ public class EmployeeService {
         this.collection = database.getCollection("Employees");//collection/entity/table
     }
 
-    public void addEmployee(Employee employee, JTextField passwordTextField) {
+    public void addEmployee(Employee employee) {
         Document employeeDoc = new Document("_id", employee.getId())//converts Employee object into Document
                 .append("username", employee.getUsername())
-                .append("password", passwordTextField.getText())
+                .append("password", employee.getPassword())
                 .append("name", employee.getName())
                 .append("role", employee.getRole())
                 .append("manager_id", employee.getManager_id())
@@ -61,9 +61,9 @@ public class EmployeeService {
         return employees;//return the List of all Employees
     }
 
-    public Employee findOneEmployee(String filteringUsername){
+    public Employee findOneEmployee(String filteringField,String filteringValue){
 
-        Bson filter = Filters.eq("username", filteringUsername);//filter by username
+        Bson filter = Filters.eq(filteringField, filteringValue);//filter by field
         Document doc = collection.find(filter).first();//find first ocurrence
 
         if(doc==null)return null;//not found
@@ -82,11 +82,11 @@ public class EmployeeService {
     }
 
 
-    public void updateEmployee(String employeeId, Employee employee, JTextField passwordTextField) {
+    public void updateEmployee(String employeeId, Employee employee) {
         Document updatedData = new Document()
                 .append("_id", employeeId)
                 .append("username", employee.getUsername())
-                .append("password", passwordTextField.getText())
+                .append("password", employee.getPassword())
                 .append("name", employee.getName())
                 .append("role", employee.getRole())
                 .append("manager_id", employee.getManager_id())

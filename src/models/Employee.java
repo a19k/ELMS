@@ -24,7 +24,7 @@ public class Employee {
             throw new IllegalArgumentException("Name cannot be empty!");
         }if(role==null || role.isBlank() || !(role.matches(ROLE_EMPLOYEE) || role.matches(ROLE_MANAGER) || role.matches(ROLE_ADMIN))){
             throw new IllegalArgumentException("Role must be one of the following: employee, manager, admin");
-        }if(manager_id==null || manager_id.isBlank()){
+        }if(manager_id==null){
             throw new IllegalArgumentException("Manager ID cannot be empty!");
         }if(leaveBalance<0){
             throw new IllegalArgumentException("Leave balance cannot be negative!");

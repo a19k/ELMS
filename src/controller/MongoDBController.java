@@ -8,7 +8,7 @@ import org.bson.Document;
 
 public class MongoDBController {
 
-    private static final String CONNECTION_STRING = "mongodb://localhost:27017";
+    private static final String CONNECTION_STRING = "mongodb://localhost:27017/";
     private static MongoDBController instance;
     private final MongoClient mongoClient;
     private final MongoDatabase database;

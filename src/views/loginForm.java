@@ -5,7 +5,6 @@ import models.Employee;
 import models.EmployeeService;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,10 +31,8 @@ public class loginForm {
         passwordField.setFont(customFont18);
         logInButton.setFont(customFont18);
 
-        usernameTextField.setBorder(new EmptyBorder(2,5,2,5));//eliminates weird border and
-        passwordField.setBorder(new EmptyBorder(2,5,2,5));//separates the text from the border with insets
-
         EmployeeService empService = new EmployeeService();//service to Employees collection
+        System.out.println(empService.getAllEmployees());
 
         logInButton.addActionListener(new ActionListener() {//login button pressed
             @Override
@@ -44,7 +41,7 @@ public class loginForm {
                 String username = usernameTextField.getText();
                 char[] password = passwordField.getPassword();//password input from user
 
-                Employee employee = empService.findOneEmployee(username);//find employee by username
+                Employee employee = empService.findOneEmployee("username",username);//find employee by username
 
 
                 if(employee==null){//if no fitting document was found
@@ -85,6 +82,10 @@ public class loginForm {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception ignored){}
+
         JFrame frame = new JFrame("loginForm");
         frame.setContentPane(new loginForm(frame).loginPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
