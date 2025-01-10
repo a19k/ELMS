@@ -92,4 +92,8 @@ public class Employee {
     public void lowerLeaveBalance(int difference){
         this.leaveBalance -= difference;
     }
+
+    public String[] toStringArray() {
+        return new String[]{id, username, password, name, role, manager_id,String.valueOf(leaveBalance)};
+    }
 }

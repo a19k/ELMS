@@ -32,7 +32,6 @@ public class loginForm {
         logInButton.setFont(customFont18);
 
         EmployeeService empService = new EmployeeService();//service to Employees collection
-        System.out.println(empService.getAllEmployees());
 
         logInButton.addActionListener(new ActionListener() {//login button pressed
             @Override

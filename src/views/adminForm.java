@@ -8,17 +8,20 @@ import models.Employee;
 import models.EmployeeService;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 import java.util.Objects;
 
 public class adminForm {
-    //layout components
+    //INPUT components
+    //layout
     private JPanel adminPanel;
     private JTabbedPane adminTabbedPane;
     private JPanel tabInput;
+    private JPanel tabEmployees;
+    private JPanel tabLeaveRequests;
 
     //labels
     private JLabel usernameLabel;
@@ -42,11 +45,54 @@ public class adminForm {
     //save
     private JButton saveButton;
 
+    //EMPLOYEES components
+    private JTable employeesTable;
+    private JButton editButtonEmp;
+    private JButton removeButtonEmp;
+
+    //LEAVE REQUESTS components
+    private JTable leaveRequestsTable;
+    private JButton editButtonLR;
+    private JButton removeButtonLR;
+
+    //SERVICES
+    private final EmployeeService empService = new EmployeeService();
+
+    //TABLE MODELS
+    private DefaultTableModel employeesTableModel;
+    private DefaultTableModel leaveRequestsTableModel;
+
+
     public adminForm(){
+        setUpFont();
+        setUpButtonResponsivity();
+        setUpRadioButtons();
+        setUp_employeesTable();
+        setUp_leaveRequestsTable();
+        setUpButtonBehaviour();
+
+    }
+
+    public static void main(String[] args) {
+
+        try {//System Look and Feel set for the window, default is very old
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception ignored){}
+
+        JFrame frame = new JFrame("inputForm");
+        frame.setContentPane(new adminForm().adminPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+
+    private void setUpFont(){
         FlatJetBrainsMonoFont.install();
         Font customFont20 = new Font("JetBrains Mono", Font.PLAIN,20);
         Font customFont18 = new Font("JetBrains Mono", Font.PLAIN,18);
         Font customFont16 = new Font("JetBrains Mono", Font.PLAIN,16);
+        Font customFont10 = new Font("JetBrains Mono", Font.BOLD,10);
 
         adminTabbedPane.setFont(customFont20);
         usernameTextField.setFont(customFont18);
@@ -67,69 +113,105 @@ public class adminForm {
 
         saveButton.setFont(customFont18);
 
-        EmployeeService empService = new EmployeeService();
-        List<Employee> employees = empService.getAllEmployees();
+        editButtonEmp.setFont(customFont18);
+        removeButtonEmp.setFont(customFont18);
+        editButtonLR.setFont(customFont18);
+        removeButtonLR.setFont(customFont18);
 
-        adminRadio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                manager_idTextField.setText("");
-                manager_idTextField.setVisible(false);
-            }
-        });
-        employeeRadio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                manager_idTextField.setVisible(true);
-            }
-        });
-        managerRadio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                manager_idTextField.setVisible(true);
-            }
-        });
+        employeesTable.setFont(customFont10);
+        employeesTable.getTableHeader().setFont(customFont10);
+        leaveRequestsTable.setFont(customFont10);
+        leaveRequestsTable.getTableHeader().setFont(customFont10);
+    }
 
+    private void setUpButtonResponsivity(){
+        MouseListener buttonResponse = new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(53,116,240));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55,57,60));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(50,53,55));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55,57,60));
+            }
+        };
+
+        saveButton.addMouseListener(buttonResponse);
+        editButtonEmp.addMouseListener(buttonResponse);
+        removeButtonEmp.addMouseListener(buttonResponse);
+        editButtonLR.addMouseListener(buttonResponse);
+        removeButtonLR.addMouseListener(buttonResponse);
+    }
+
+    private void setUpButtonBehaviour(){
+        //saving is complicated...
+        //NEW EMPLOYEE CREATION
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean isInvalid = false;
                 boolean isAdmin = false;
 
+                //empty textfield or username not available
                 if (usernameTextField.getText().isEmpty() || empService.findOneEmployee("username", usernameTextField.getText())!=null) {
                     usernameTextField.setText("Enter valid username!");
                     isInvalid = true;
                 }
-
+                //empty textfield
                 if (passwordTextField.getText().isEmpty()) {
                     passwordTextField.setText("Enter valid password!");
                     isInvalid = true;
                 }
-
+                //empty textfield
                 if (nameTextField.getText().isEmpty()) {
                     nameTextField.setText("Enter valid name!");
                     isInvalid = true;
                 }
 
+                //no role selected
                 if (roleRadioGroup.getSelection()==null ){
                     isInvalid = true;
                 }
-                else {
+                else {//with admin role, checking for manager_id won't be necessary(admin doesn't need it)
                     isAdmin = Objects.equals(roleRadioGroup.getSelection().getActionCommand(), Employee.ROLE_ADMIN);
                 }
 
+                //checks if not admin
                 if(!isAdmin) {
+                    //empty textfield
                     if (manager_idTextField.getText().isEmpty()) {
                         manager_idTextField.setText("Enter valid manager ID");
                         isInvalid = true;
                     }
                     Employee manager = empService.findOneEmployee("_id", manager_idTextField.getText());
+                    //manager doesn't exist or is not a manager
                     if (manager == null || !Objects.equals(manager.getRole(), Employee.ROLE_MANAGER)) {
                         manager_idTextField.setText("Enter valid manager ID");
                         isInvalid = true;
                     }
                 }
 
+                //value is null for whatever reason or is not Integer
                 if (leaveBalanceSpinner.getValue()==null || !(leaveBalanceSpinner.getValue() instanceof Integer) ){
                     isInvalid=true;
                 }
@@ -152,52 +234,81 @@ public class adminForm {
                 empService.addEmployee(new Employee(username,hashedPassword,name,role,manager_id,leaveBalance));
             }
         });
-    /*
 
-        DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.setDataVector(new String[][]{} ,new String[]{"Subject", "Grade"});
-        gradesTable.setModel(tableModel);
-        gradesTable.setRowHeight(30);
-        gradesTable.getTableHeader().setFont(new Font("Segoe UI Semilight", Font.PLAIN, 20));
-        gradesTable.getTableHeader().setBackground(new Color(220,220,220));
-        gradesPane.setBorder(new EmptyBorder(0,0,0,0));
-        gradesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        addAGradeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tableModel.addRow(new String[]{"", ""});
-                gradesTable.changeSelection(gradesTable.getRowCount()-1,1,false,false);
-                gradesTable.editCellAt(gradesTable.getRowCount()-1,0);
-                gradesTable.grabFocus();
-            }
-        });
-        removeAGradeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tableModel.removeRow(gradesTable.getSelectedRow());
-            }
-        });
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gradesTable.editCellAt(gradesTable.getSelectedRow(),gradesTable.getSelectedColumn());
-                gradesTable.grabFocus();
-            }
-        });*/
+        //tabEmployees
+        //editButtonEmp.addActionListener(e -> adminTabbedPane.setSelectedComponent(tabEditEmp));
+        removeButtonEmp.addActionListener(e -> employeesTableModel.removeRow(employeesTable.getSelectedRow()));
+
+        //tabLeaveRequests
+        //editButtonEmp.addActionListener(e -> adminTabbedPane.setSelectedComponent(tabEditLR);
+        removeButtonLR.addActionListener(e -> leaveRequestsTableModel.removeRow(leaveRequestsTable.getSelectedRow()));
     }
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch(Exception ignored){}
+    private void setUp_employeesTable(){
+        //table model -> non-editable
+        employeesTableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
 
-        EmployeeService empService = new EmployeeService();
-        JFrame frame = new JFrame("inputForm");
-        frame.setContentPane(new adminForm().adminPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        //setting header
+        employeesTableModel.setColumnIdentifiers(new String[]{"ID", "Username","Password","Name","Role","Manager ID","Leave Balance"});
 
+        //setting data
+        List<Employee> employeesList = empService.getAllEmployees();//pull all employee data from db
+        for (int i = 0; i<employeesList.size(); i++)
+            employeesTableModel.addRow(employeesList.get(i).toStringArray());//add every employee to model to separate row
+
+        employeesTable.setModel(employeesTableModel);//assign the model to the table component
+
+        //additional adjustions
+        employeesTable.setRowHeight(30);
+        employeesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//can select only one row at a time
+
+
+        //FONT SET IN setUpFont()
+    }
+
+    private void setUp_leaveRequestsTable(){
+        //table model -> non-editable
+        leaveRequestsTableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
+
+        //setting header
+        leaveRequestsTableModel.setColumnIdentifiers(new String[]{"1","ne znam","neki razlog"});
+
+        //setting data
+        //getallleaverequests
+        //for each leave request add to table model
+        leaveRequestsTableModel.addRow(new String[]{"1","ne znam","neki razlog"});
+
+        leaveRequestsTable.setModel(leaveRequestsTableModel);//assign the model to the table component
+
+        //additional adjustions
+        leaveRequestsTable.setRowHeight(30);
+        leaveRequestsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+
+        //FONT SET IN setUpFont()
+    }
+
+    private void setUpRadioButtons(){
+        adminRadio.addActionListener(e -> {//hide manager_id input field when admin selected
+            manager_idTextField.setText("");
+            manager_idTextField.setVisible(false);
+        });
+        employeeRadio.addActionListener(e -> manager_idTextField.setVisible(true));//redraw when employee selected
+        managerRadio.addActionListener(e -> manager_idTextField.setVisible(true));//redraw when manager selected
+
+        //FONT SET IN setUpFont()
     }
 
 }
