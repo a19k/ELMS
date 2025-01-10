@@ -3,12 +3,10 @@ package models;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
 import controller.MongoDBController;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import javax.swing.JTextField;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +75,14 @@ public class EmployeeService {
         int leaveBalance = doc.getInteger("leaveBalance");
 
         Employee employee = new Employee(username,password,name,role,manager_id,leaveBalance);//create Employee object from variables
+
+        try {//overwrite the auto-assigned id with already existing(real) id
+            Field idField = Employee.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(employee, id);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         return employee;
     }

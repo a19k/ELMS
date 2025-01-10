@@ -95,5 +95,6 @@ public class Employee {
 
     public String[] toStringArray() {
         return new String[]{id, username, password, name, role, manager_id,String.valueOf(leaveBalance)};
+
     }
 }
