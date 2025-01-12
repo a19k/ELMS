@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="adminPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="20" vgap="20">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="821" height="431"/>
+      <xy x="20" y="20" width="821" height="459"/>
     </constraints>
     <properties>
       <background color="-13947599"/>
@@ -39,9 +39,8 @@
             <children>
               <component id="d5edb" class="javax.swing.JTextField" binding="usernameTextField">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="-1" height="30"/>
-                    <preferred-size width="300" height="30"/>
+                  <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -51,9 +50,8 @@
               </component>
               <component id="104e4" class="javax.swing.JTextField" binding="passwordTextField">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="-1" height="30"/>
-                    <preferred-size width="300" height="30"/>
+                  <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -63,9 +61,8 @@
               </component>
               <component id="16e7" class="javax.swing.JTextField" binding="nameTextField">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="-1" height="30"/>
-                    <preferred-size width="300" height="30"/>
+                  <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -102,7 +99,7 @@
                 <properties>
                   <font name="JetBrains Mono" size="20" style="0"/>
                   <foreground color="-2302756"/>
-                  <labelFor value="4305e"/>
+                  <labelFor value="80421"/>
                   <text value="Role"/>
                 </properties>
               </component>
@@ -139,16 +136,15 @@
                   <text value="Leave Balance"/>
                 </properties>
               </component>
-              <component id="4305e" class="javax.swing.JTextField" binding="manager_idTextField">
+              <component id="80421" class="javax.swing.JComboBox" binding="manager_idCombo">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="-1" height="30"/>
-                    <preferred-size width="300" height="30"/>
+                  <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <background color="-2104860"/>
                   <font name="JetBrains Mono" size="20" style="0"/>
-                  <foreground color="-16777216"/>
                 </properties>
               </component>
               <component id="4e0c2" class="javax.swing.JRadioButton" binding="employeeRadio">

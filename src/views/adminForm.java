@@ -6,6 +6,8 @@ import com.password4j.Password;
 import com.password4j.types.Bcrypt;
 import models.Employee;
 import models.EmployeeService;
+import models.LeaveRequest;
+import models.LeaveRequestService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -35,7 +37,7 @@ public class adminForm {
     private JTextField usernameTextField;
     private JTextField passwordTextField;
     private JTextField nameTextField;
-    private JTextField manager_idTextField;
+    private JComboBox manager_idCombo;
     private JRadioButton employeeRadio;
     private JRadioButton managerRadio;
     private JRadioButton adminRadio;
@@ -57,10 +59,16 @@ public class adminForm {
 
     //SERVICES
     private final EmployeeService empService = new EmployeeService();
+    private final LeaveRequestService lrService = new LeaveRequestService();
+
+    //LISTS
+    private List<Employee> employeesList;
+    private List<LeaveRequest> leaveRequestList;
 
     //TABLE MODELS
     private DefaultTableModel employeesTableModel;
     private DefaultTableModel leaveRequestsTableModel;
+    private DefaultComboBoxModel<String> comboBoxModel;
 
 
     public adminForm(){
@@ -70,6 +78,7 @@ public class adminForm {
         setUp_employeesTable();
         setUp_leaveRequestsTable();
         setUpButtonBehaviour();
+        setUpManagerIDCombo();
 
     }
 
@@ -84,6 +93,7 @@ public class adminForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     }
 
@@ -98,7 +108,7 @@ public class adminForm {
         usernameTextField.setFont(customFont18);
         passwordTextField.setFont(customFont18);
         nameTextField.setFont(customFont18);
-        manager_idTextField.setFont(customFont18);
+        manager_idCombo.setFont(customFont18);
         employeeRadio.setFont(customFont16);
         managerRadio.setFont(customFont16);
         adminRadio.setFont(customFont16);
@@ -196,21 +206,6 @@ public class adminForm {
                     isAdmin = Objects.equals(roleRadioGroup.getSelection().getActionCommand(), Employee.ROLE_ADMIN);
                 }
 
-                //checks if not admin
-                if(!isAdmin) {
-                    //empty textfield
-                    if (manager_idTextField.getText().isEmpty()) {
-                        manager_idTextField.setText("Enter valid manager ID");
-                        isInvalid = true;
-                    }
-                    Employee manager = empService.findOneEmployee("_id", manager_idTextField.getText());
-                    //manager doesn't exist or is not a manager
-                    if (manager == null || !Objects.equals(manager.getRole(), Employee.ROLE_MANAGER)) {
-                        manager_idTextField.setText("Enter valid manager ID");
-                        isInvalid = true;
-                    }
-                }
-
                 //value is null for whatever reason or is not Integer
                 if (leaveBalanceSpinner.getValue()==null || !(leaveBalanceSpinner.getValue() instanceof Integer) ){
                     isInvalid=true;
@@ -225,13 +220,14 @@ public class adminForm {
                 String password = passwordTextField.getText();
                 String name = nameTextField.getText();
                 String role = roleRadioGroup.getSelection().getActionCommand();
-                String manager_id = manager_idTextField.getText();
+                String manager_id = (String) manager_idCombo.getSelectedItem();
                 int leaveBalance = (int) leaveBalanceSpinner.getModel().getValue();
 
                 BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.B, 12);
                 String hashedPassword = Password.hash(password).with(bcrypt).getResult();
 
                 empService.addEmployee(new Employee(username,hashedPassword,name,role,manager_id,leaveBalance));
+                setUp_employeesTable();
             }
         });
 
@@ -245,6 +241,8 @@ public class adminForm {
     }
 
     private void setUp_employeesTable(){
+        employeesList = empService.getAllEmployees();//refresh the employee list
+
         //table model -> non-editable
         employeesTableModel = new DefaultTableModel(){
             @Override
@@ -258,7 +256,6 @@ public class adminForm {
         employeesTableModel.setColumnIdentifiers(new String[]{"ID", "Username","Password","Name","Role","Manager ID","Leave Balance"});
 
         //setting data
-        List<Employee> employeesList = empService.getAllEmployees();//pull all employee data from db
         for (int i = 0; i<employeesList.size(); i++)
             employeesTableModel.addRow(employeesList.get(i).toStringArray());//add every employee to model to separate row
 
@@ -273,6 +270,8 @@ public class adminForm {
     }
 
     private void setUp_leaveRequestsTable(){
+        leaveRequestList = lrService.getAllLeaveRequests();//refresh the leave requests list
+
         //table model -> non-editable
         leaveRequestsTableModel = new DefaultTableModel(){
             @Override
@@ -286,7 +285,6 @@ public class adminForm {
         leaveRequestsTableModel.setColumnIdentifiers(new String[]{"1","ne znam","neki razlog"});
 
         //setting data
-        //getallleaverequests
         //for each leave request add to table model
         leaveRequestsTableModel.addRow(new String[]{"1","ne znam","neki razlog"});
 
@@ -302,13 +300,32 @@ public class adminForm {
 
     private void setUpRadioButtons(){
         adminRadio.addActionListener(e -> {//hide manager_id input field when admin selected
-            manager_idTextField.setText("");
-            manager_idTextField.setVisible(false);
+            manager_idCombo.addItem("");
+            manager_idCombo.setSelectedItem("");
+            manager_idCombo.setVisible(false);
         });
-        employeeRadio.addActionListener(e -> manager_idTextField.setVisible(true));//redraw when employee selected
-        managerRadio.addActionListener(e -> manager_idTextField.setVisible(true));//redraw when manager selected
+        employeeRadio.addActionListener(e -> {
+            manager_idCombo.removeItem("");
+            manager_idCombo.setVisible(true);
+        });//redraw when employee selected
+        managerRadio.addActionListener(e -> {
+            manager_idCombo.removeItem("");
+            manager_idCombo.setVisible(true);
+        });//redraw when manager selected
 
         //FONT SET IN setUpFont()
+    }
+
+    private void setUpManagerIDCombo(){
+
+        //initialize combo box model
+        comboBoxModel = new DefaultComboBoxModel<>();
+
+        //put all manager's IDs in model
+        for (Employee employee : employeesList)
+            if (Objects.equals(employee.getRole(), Employee.ROLE_MANAGER)) comboBoxModel.addElement(employee.getId());
+
+        manager_idCombo.setModel(comboBoxModel);
     }
 
 }

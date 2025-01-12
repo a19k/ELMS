@@ -1,13 +1,15 @@
 package views;
 
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
+import com.password4j.BcryptFunction;
+import com.password4j.Password;
+import com.password4j.types.Bcrypt;
 import models.Employee;
 import models.EmployeeService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.Arrays;
 
 public class loginForm {
@@ -19,11 +21,14 @@ public class loginForm {
     private JLabel passwordLabel;
     private JButton logInButton;
 
-    public loginForm(JFrame frame){;
+    public loginForm(JFrame frame) {
+        setUpButtonResponsivity();
+        setUpKeyListener();
+
         FlatJetBrainsMonoFont.install();//custom font, 3 sizes
-        Font customFont20 = new Font("JetBrains Mono", Font.PLAIN,20);
-        Font customFont18 = new Font("JetBrains Mono", Font.PLAIN,18);
-        Font customFont16 = new Font("JetBrains Mono", Font.PLAIN,16);
+        Font customFont20 = new Font("JetBrains Mono", Font.PLAIN, 20);
+        Font customFont18 = new Font("JetBrains Mono", Font.PLAIN, 18);
+        Font customFont16 = new Font("JetBrains Mono", Font.PLAIN, 16);
         loginLabel.setFont(customFont20);
         usernameLabel.setFont(customFont16);
         passwordLabel.setFont(customFont16);
@@ -40,30 +45,34 @@ public class loginForm {
                 String username = usernameTextField.getText();
                 char[] password = passwordField.getPassword();//password input from user
 
-                Employee employee = empService.findOneEmployee("username",username);//find employee by username
+                Employee employee = empService.findOneEmployee("username", username);//find employee by username
 
 
-                if(employee==null){//if no fitting document was found
-                    JOptionPane.showMessageDialog(null,"User does not exist!");
+                if (employee == null) {//if no fitting document was found
+                    JOptionPane.showMessageDialog(null, "User does not exist!");
                     usernameTextField.setText("");//empties the text field and
                     usernameTextField.grabFocus();//focuses on it
                     return;
                 }
 
                 String truePassword = employee.getPassword();//password in db
-                if(!truePassword.equals(String.valueOf(password))) {//if passwords are not the same
+                BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.B, 12);
+                boolean verified = Password.check(String.valueOf(password), employee.getPassword())
+                        .with(bcrypt);//compare password in textField through hash function
+
+
+                if (!verified) {//if passwords are not the same
                     JOptionPane.showMessageDialog(null, "Password is incorrect!");
                     passwordField.setText("");//empties the password field and
                     passwordField.grabFocus();//focuses on it
-                }
-                else{//if user exists and password is correct
+                } else {//if user exists and password is correct
                     Arrays.fill(password, (char) 0);//burn the evidence
 
                     //open next form
                     switch (employee.getRole()) {
                         case "employee":
                             //open leaveRequestCreation form
-                            employeeForm.main(null);
+                            employeeForm.main(employee.toStringArray());
                             break;
                         case "manager":
                             //open leaveRequestReview/employeeList/leaveRequestList form
@@ -73,7 +82,8 @@ public class loginForm {
                             //open input/employeeList/leaveRequestList form
                             adminForm.main(null);
                             break;
-                        default:throw new IllegalArgumentException("Illegal role found in database: "+employee.getRole()+" employee, manager or admin expected!");
+                        default:
+                            throw new IllegalArgumentException("Illegal role found in database: " + employee.getRole() + " employee, manager or admin expected!");
                     }
                 }
             }
@@ -83,12 +93,72 @@ public class loginForm {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch(Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         JFrame frame = new JFrame("loginForm");
         frame.setContentPane(new loginForm(frame).loginPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+    }
+
+
+    private void setUpButtonResponsivity() {
+        MouseListener buttonResponse = new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(53, 116, 240));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55, 57, 60));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(50, 53, 55));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55, 57, 60));
+            }
+        };
+
+        logInButton.addMouseListener(buttonResponse);
+
+    }
+
+    public void setUpKeyListener(){
+        KeyListener enter = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getExtendedKeyCode() == KeyEvent.getExtendedKeyCodeForChar(KeyEvent.VK_ENTER)) logInButton.doClick();
+            }
+        };
+        usernameTextField.addKeyListener(enter);
+        passwordField.addKeyListener(enter);
     }
 }
+
