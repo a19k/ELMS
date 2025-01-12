@@ -19,6 +19,7 @@ public class LeaveRequest {
     public static String TYPE_PARENTAL="parental";
     public static String TYPE_UNPAID="unpaid";
     public static String TYPE_MISC="misc";
+    public static String TYPE_UNDECIDED="undecided";
 
     public static String STATUS_WAITING="waiting";
     public static String STATUS_APPROVED="approved";
@@ -47,7 +48,7 @@ public class LeaveRequest {
         this.reason = reason;
         this.startDate = startDate;
         this.endDate = endDate;
-
+        this.type = TYPE_UNDECIDED;
         this.status = STATUS_WAITING;
     }
 
@@ -60,12 +61,8 @@ public class LeaveRequest {
             throw new IllegalArgumentException("Reason cannot be empty!");
         }if(startDate==null){
             throw new IllegalArgumentException("Start date cannot be empty!");
-        }if(startDate.before(new Date())){
-            throw new IllegalArgumentException("Start date cannot earlier than now!");
         }if(endDate==null){
             throw new IllegalArgumentException("End date cannot be empty!");
-        }if(endDate.before(startDate)){
-            throw new IllegalArgumentException("End date cannot be earlier than Start date!");
         }
 
         this.id = UUID.randomUUID().toString();
@@ -119,8 +116,8 @@ public class LeaveRequest {
     }
 
     public void setType(String type) {
-        if(type==null || type.isBlank() || !(type.matches(TYPE_SICK) || type.matches(TYPE_EMERGENCY) || type.matches(TYPE_VACATION) || type.matches(TYPE_PARENTAL) || type.matches(TYPE_UNPAID) || type.matches(TYPE_MISC)))
-            throw new IllegalArgumentException("Type must be one of the following: sick, emergency, vacation, parental, unpaid, misc");
+        if(type==null || type.isBlank() || !(type.matches(TYPE_SICK) || type.matches(TYPE_EMERGENCY) || type.matches(TYPE_VACATION) || type.matches(TYPE_PARENTAL) || type.matches(TYPE_UNPAID) || type.matches(TYPE_MISC) || type.matches(TYPE_UNDECIDED)))
+            throw new IllegalArgumentException("Type must be one of the following: sick, emergency, vacation, parental, unpaid, misc, undecided");
         this.type = type;
     }
 

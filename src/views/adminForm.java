@@ -13,8 +13,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 public class adminForm {
     //INPUT components
@@ -25,37 +25,77 @@ public class adminForm {
     private JPanel tabEmployees;
     private JPanel tabLeaveRequests;
 
+    //INPUT
     //labels
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    private JLabel nameLabel;
-    private JLabel roleLabel;
-    private JLabel managerIDLabel;
-    private JLabel leaveBalanceLabel;
+    private JLabel inputUsernameLabel;
+    private JLabel inputPasswordLabel;
+    private JLabel inputNameLabel;
+    private JLabel inputRoleLabel;
+    private JLabel inputManagerIDLabel;
+    private JLabel inputLeaveBalanceLabel;
 
     //interactive components
-    private JTextField usernameTextField;
-    private JTextField passwordTextField;
-    private JTextField nameTextField;
-    private JComboBox manager_idCombo;
-    private JRadioButton employeeRadio;
-    private JRadioButton managerRadio;
-    private JRadioButton adminRadio;
+    private JTextField inputUsernameTextField;
+    private JTextField inputPasswordTextField;
+    private JTextField inputNameTextField;
+    private JComboBox inputManagerIDCombo;
+    private JRadioButton inputEmployeeRadio;
+    private JRadioButton inputManagerRadio;
+    private JRadioButton inputAdminRadio;
     private ButtonGroup roleRadioGroup;
-    private JSpinner leaveBalanceSpinner;
+    private JSpinner inputLeaveBalanceSpinner;
 
     //save
-    private JButton saveButton;
+    private JButton inputSaveButton;
 
     //EMPLOYEES components
     private JTable employeesTable;
-    private JButton editButtonEmp;
-    private JButton removeButtonEmp;
+    private JButton empEditButton;
+    private JButton empRemoveButton;
 
     //LEAVE REQUESTS components
     private JTable leaveRequestsTable;
-    private JButton editButtonLR;
-    private JButton removeButtonLR;
+    private JButton lrEditButton;
+    private JButton lrRemoveButton;
+
+    //UPDATE EMPLOYEE components
+    private JPanel tabUpdateEmp;
+    private JLabel updateEmpUsernameLabel;
+    private JLabel updateEmpPasswordLabel;
+    private JLabel updateEmpNameLabel;
+    private JLabel updateEmpManagerIDLabel;
+    private JLabel updateEmpLeaveBalanceLabel;
+
+    private JLabel updateEmpUsernameValueLabel;
+    private JTextField updateEmpPasswordTextField;
+    private JTextField updateEmpNameTextField;
+    private JComboBox updateEmpManagerIDCombo;
+    private JCheckBox updateEmpSpinnerCheck;
+    private JSpinner updateEmpLeaveBalanceSpinner;
+    private JButton updateEmpSaveButton;
+
+    //UPDATE LEAVE REQUEST components
+    private JPanel tabUpdateLR;
+    private JLabel updateLRIDLabel;
+    private JLabel updateLRReasonLabel;
+    private JLabel updateLRStartDateLabel;
+    private JLabel updateLREndDateLabel;
+    private JLabel updateLRDayLabel;
+    private JLabel updateLRMonthLabel;
+    private JLabel updateLRYearLabel;
+    private JLabel updateLRTypeLabel;
+    private JLabel updateLRStatusLabel;
+
+    private JTextArea updateLRReasonTextArea;
+    private JComboBox updateLRStartDayCombo;
+    private JComboBox updateLRStartMonthCombo;
+    private JComboBox updateLRStartYearCombo;
+    private JComboBox updateLREndDayCombo;
+    private JComboBox updateLREndMonthCombo;
+    private JComboBox updateLREndYearCombo;
+    private JButton updateLRSaveButton;
+    private JComboBox updateLRTypeCombo;
+    private JComboBox updateLRStatusCombo;
 
     //SERVICES
     private final EmployeeService empService = new EmployeeService();
@@ -69,16 +109,18 @@ public class adminForm {
     private DefaultTableModel employeesTableModel;
     private DefaultTableModel leaveRequestsTableModel;
     private DefaultComboBoxModel<String> comboBoxModel;
+    private DefaultComboBoxModel<String> comboBoxModel_update;
 
 
     public adminForm(){
         setUpFont();
         setUpButtonResponsivity();
-        setUpRadioButtons();
+        setUpRadioBehaviour();
         setUp_employeesTable();
         setUp_leaveRequestsTable();
         setUpButtonBehaviour();
         setUpManagerIDCombo();
+        setUpDaysInMonth();
 
     }
 
@@ -105,33 +147,68 @@ public class adminForm {
         Font customFont10 = new Font("JetBrains Mono", Font.BOLD,10);
 
         adminTabbedPane.setFont(customFont20);
-        usernameTextField.setFont(customFont18);
-        passwordTextField.setFont(customFont18);
-        nameTextField.setFont(customFont18);
-        manager_idCombo.setFont(customFont18);
-        employeeRadio.setFont(customFont16);
-        managerRadio.setFont(customFont16);
-        adminRadio.setFont(customFont16);
-        leaveBalanceSpinner.setFont(customFont18);
+        inputUsernameTextField.setFont(customFont18);
+        inputPasswordTextField.setFont(customFont18);
+        inputNameTextField.setFont(customFont18);
+        inputManagerIDCombo.setFont(customFont18);
+        inputEmployeeRadio.setFont(customFont16);
+        inputManagerRadio.setFont(customFont16);
+        inputAdminRadio.setFont(customFont16);
+        inputLeaveBalanceSpinner.setFont(customFont18);
 
-        usernameLabel.setFont(customFont16);
-        passwordLabel.setFont(customFont16);
-        nameLabel.setFont(customFont16);
-        roleLabel.setFont(customFont16);
-        managerIDLabel.setFont(customFont16);
-        leaveBalanceLabel.setFont(customFont16);
+        inputUsernameLabel.setFont(customFont16);
+        inputPasswordLabel.setFont(customFont16);
+        inputNameLabel.setFont(customFont16);
+        inputRoleLabel.setFont(customFont16);
+        inputManagerIDLabel.setFont(customFont16);
+        inputLeaveBalanceLabel.setFont(customFont16);
 
-        saveButton.setFont(customFont18);
+        inputSaveButton.setFont(customFont18);
 
-        editButtonEmp.setFont(customFont18);
-        removeButtonEmp.setFont(customFont18);
-        editButtonLR.setFont(customFont18);
-        removeButtonLR.setFont(customFont18);
+        empEditButton.setFont(customFont18);
+        empRemoveButton.setFont(customFont18);
+        lrEditButton.setFont(customFont18);
+        lrRemoveButton.setFont(customFont18);
 
         employeesTable.setFont(customFont10);
         employeesTable.getTableHeader().setFont(customFont10);
         leaveRequestsTable.setFont(customFont10);
         leaveRequestsTable.getTableHeader().setFont(customFont10);
+
+        updateEmpUsernameLabel.setFont(customFont16);
+        updateEmpUsernameValueLabel.setFont(customFont16);
+        updateEmpPasswordLabel.setFont(customFont16);
+        updateEmpPasswordTextField.setFont(customFont16);
+        updateEmpNameLabel.setFont(customFont16);
+        updateEmpNameTextField.setFont(customFont16);
+        updateEmpManagerIDLabel.setFont(customFont16);
+        updateEmpManagerIDCombo.setFont(customFont16);
+        updateEmpLeaveBalanceLabel.setFont(customFont16);
+        updateEmpLeaveBalanceSpinner.setFont(customFont16);
+
+        updateEmpSaveButton.setFont(customFont16);
+
+        updateLRIDLabel.setFont(customFont16);
+        updateLRReasonLabel.setFont(customFont16);
+        updateLRStartDateLabel.setFont(customFont16);
+        updateLREndDateLabel.setFont(customFont16);
+        updateLRDayLabel.setFont(customFont16);
+        updateLRMonthLabel.setFont(customFont16);
+        updateLRYearLabel.setFont(customFont16);
+        updateLRTypeLabel.setFont(customFont16);
+        updateLRStatusLabel.setFont(customFont16);
+
+        updateLRReasonTextArea.setFont(customFont16);
+        updateLRStartDayCombo.setFont(customFont16);
+        updateLRStartMonthCombo.setFont(customFont16);
+        updateLRStartYearCombo.setFont(customFont16);
+        updateLREndDayCombo.setFont(customFont16);
+        updateLREndMonthCombo.setFont(customFont16);
+        updateLREndYearCombo.setFont(customFont16);
+        updateLRSaveButton.setFont(customFont16);
+        updateLRTypeCombo.setFont(customFont16);
+        updateLRStatusCombo.setFont(customFont16);
+
     }
 
     private void setUpButtonResponsivity(){
@@ -166,35 +243,39 @@ public class adminForm {
             }
         };
 
-        saveButton.addMouseListener(buttonResponse);
-        editButtonEmp.addMouseListener(buttonResponse);
-        removeButtonEmp.addMouseListener(buttonResponse);
-        editButtonLR.addMouseListener(buttonResponse);
-        removeButtonLR.addMouseListener(buttonResponse);
+        inputSaveButton.addMouseListener(buttonResponse);
+
+        empEditButton.addMouseListener(buttonResponse);
+        empRemoveButton.addMouseListener(buttonResponse);
+
+        lrEditButton.addMouseListener(buttonResponse);
+        lrRemoveButton.addMouseListener(buttonResponse);
+
+        updateEmpSaveButton.addMouseListener(buttonResponse);
+        updateLRSaveButton.addMouseListener(buttonResponse);
     }
 
     private void setUpButtonBehaviour(){
         //saving is complicated...
         //NEW EMPLOYEE CREATION
-        saveButton.addActionListener(new ActionListener() {
+        inputSaveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean isInvalid = false;
-                boolean isAdmin = false;
 
                 //empty textfield or username not available
-                if (usernameTextField.getText().isEmpty() || empService.findOneEmployee("username", usernameTextField.getText())!=null) {
-                    usernameTextField.setText("Enter valid username!");
+                if (inputUsernameTextField.getText().isEmpty() || empService.findOneEmployee("username", inputUsernameTextField.getText())!=null) {
+                    inputUsernameTextField.setText("Enter valid username!");
                     isInvalid = true;
                 }
                 //empty textfield
-                if (passwordTextField.getText().isEmpty()) {
-                    passwordTextField.setText("Enter valid password!");
+                if (inputPasswordTextField.getText().isEmpty()) {
+                    inputPasswordTextField.setText("Enter valid password!");
                     isInvalid = true;
                 }
                 //empty textfield
-                if (nameTextField.getText().isEmpty()) {
-                    nameTextField.setText("Enter valid name!");
+                if (inputNameTextField.getText().isEmpty()) {
+                    inputNameTextField.setText("Enter valid name!");
                     isInvalid = true;
                 }
 
@@ -202,12 +283,9 @@ public class adminForm {
                 if (roleRadioGroup.getSelection()==null ){
                     isInvalid = true;
                 }
-                else {//with admin role, checking for manager_id won't be necessary(admin doesn't need it)
-                    isAdmin = Objects.equals(roleRadioGroup.getSelection().getActionCommand(), Employee.ROLE_ADMIN);
-                }
 
                 //value is null for whatever reason or is not Integer
-                if (leaveBalanceSpinner.getValue()==null || !(leaveBalanceSpinner.getValue() instanceof Integer) ){
+                if (inputLeaveBalanceSpinner.getValue()==null || !(inputLeaveBalanceSpinner.getValue() instanceof Integer) ){
                     isInvalid=true;
                 }
 
@@ -216,12 +294,12 @@ public class adminForm {
                     return;
                 }
 
-                String username = usernameTextField.getText();
-                String password = passwordTextField.getText();
-                String name = nameTextField.getText();
+                String username = inputUsernameTextField.getText();
+                String password = inputPasswordTextField.getText();
+                String name = inputNameTextField.getText();
                 String role = roleRadioGroup.getSelection().getActionCommand();
-                String manager_id = (String) manager_idCombo.getSelectedItem();
-                int leaveBalance = (int) leaveBalanceSpinner.getModel().getValue();
+                String manager_id = (String) inputManagerIDCombo.getSelectedItem();
+                int leaveBalance = (int) inputLeaveBalanceSpinner.getModel().getValue();
 
                 BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.B, 12);
                 String hashedPassword = Password.hash(password).with(bcrypt).getResult();
@@ -232,12 +310,128 @@ public class adminForm {
         });
 
         //tabEmployees
-        //editButtonEmp.addActionListener(e -> adminTabbedPane.setSelectedComponent(tabEditEmp));
-        removeButtonEmp.addActionListener(e -> employeesTableModel.removeRow(employeesTable.getSelectedRow()));
+        empEditButton.addActionListener(e -> {
+            if(employeesTable.getSelectedRow()==-1)return;
+
+            adminTabbedPane.setSelectedComponent(tabUpdateEmp);
+
+            int row = employeesTable.getSelectedRow();
+            updateEmpUsernameValueLabel.setText(String.valueOf(employeesTable.getModel().getValueAt(row,1)));
+            updateEmpManagerIDCombo.removeItem(String.valueOf(employeesTable.getModel().getValueAt(row,0)));
+        });
+
+        empRemoveButton.addActionListener(e -> {
+            empService.deleteEmployee(String.valueOf(employeesTable.getModel().getValueAt(employeesTable.getSelectedRow(),0)));
+            employeesTableModel.removeRow(employeesTable.getSelectedRow());
+            });
 
         //tabLeaveRequests
-        //editButtonEmp.addActionListener(e -> adminTabbedPane.setSelectedComponent(tabEditLR);
-        removeButtonLR.addActionListener(e -> leaveRequestsTableModel.removeRow(leaveRequestsTable.getSelectedRow()));
+        lrEditButton.addActionListener(e -> {
+            if(leaveRequestsTable.getSelectedRow()==-1)return;
+
+            adminTabbedPane.setSelectedComponent(tabUpdateLR);
+
+            int row = leaveRequestsTable.getSelectedRow();
+            updateLRIDLabel.setText(String.valueOf(leaveRequestsTable.getModel().getValueAt(row,0)));
+
+        });
+        lrRemoveButton.addActionListener(e -> {
+            lrService.deleteLeaveRequest(String.valueOf(leaveRequestsTable.getModel().getValueAt(leaveRequestsTable.getSelectedRow(),0)));
+            leaveRequestsTableModel.removeRow(leaveRequestsTable.getSelectedRow());
+            });
+
+        updateEmpSaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(employeesTable.getSelectedRow()==-1)return;
+
+                //value is null for whatever reason or is not Integer
+                if (inputLeaveBalanceSpinner.getValue()==null || !(inputLeaveBalanceSpinner.getValue() instanceof Integer) ){
+                    JOptionPane.showMessageDialog(null,"Invalid input");
+                    return;
+                }
+
+                String id = String.valueOf(employeesTable.getModel().getValueAt(employeesTable.getSelectedRow(),0));
+                Employee employee = empService.findOneEmployee("_id",id);
+
+                if(employee==null) throw new NullPointerException("Employee not found!");
+
+                BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.B, 12);
+
+                if(!updateEmpPasswordTextField.getText().isBlank())
+                    employee.setPassword(Password.hash(updateEmpPasswordTextField.getText()).with(bcrypt).getResult());
+                if(!updateEmpNameTextField.getText().isBlank())
+
+                    employee.setName(updateEmpNameTextField.getText());
+
+                if(updateEmpManagerIDCombo.getSelectedItem()!="")
+                    employee.setManager_id(String.valueOf(updateEmpManagerIDCombo.getSelectedItem()));
+
+                if(updateEmpSpinnerCheck.isSelected())
+                    employee.setLeaveBalance((int) updateEmpLeaveBalanceSpinner.getModel().getValue());
+
+                empService.updateEmployee(id,employee);
+
+                updateEmpPasswordTextField.setText("");
+                updateEmpNameTextField.setText("");
+                updateEmpManagerIDCombo.setSelectedIndex(0);
+                updateEmpSpinnerCheck.setSelected(false);
+
+                setUp_employeesTable();
+
+            }
+        });
+
+        updateLRSaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(leaveRequestsTable.getSelectedRow()==-1)return;
+
+
+                String id = String.valueOf(leaveRequestsTable.getModel().getValueAt(leaveRequestsTable.getSelectedRow(),0));
+                LeaveRequest leaveRequest = lrService.findOneLeaveRequest("_id",id);
+
+                if(leaveRequest==null) throw new NullPointerException("Leave request not found!");
+
+                if(!updateLRReasonTextArea.getText().isBlank())
+                    leaveRequest.setReason(updateLRReasonTextArea.getText());
+
+                if(updateLRStartDayCombo.getSelectedItem()!=""){
+                    int startDay = Integer.parseInt(String.valueOf(updateLRStartDayCombo.getSelectedItem()));
+                    int startMonth = Integer.parseInt(String.valueOf(updateLRStartMonthCombo.getSelectedItem()))-1;
+                    int startYear = Integer.parseInt(String.valueOf(updateLRStartYearCombo.getSelectedItem()));
+                    Calendar startDateCalendar = new GregorianCalendar(startYear,startMonth,startDay);
+                    leaveRequest.setStartDate(startDateCalendar.getTime());
+                }
+
+                if(updateLREndDayCombo.getSelectedItem()!=""){
+                    int endDay = Integer.parseInt(String.valueOf(updateLREndDayCombo.getSelectedItem()));
+                    int endMonth = Integer.parseInt(String.valueOf(updateLREndMonthCombo.getSelectedItem()))-1;
+                    int endYear = Integer.parseInt(String.valueOf(updateLREndYearCombo.getSelectedItem()));
+                    Calendar endDateCalendar = new GregorianCalendar(endYear,endMonth,endDay);
+                    leaveRequest.setEndDate(endDateCalendar.getTime());
+                }
+
+                if(updateLRTypeCombo.getSelectedItem()!="")
+                    leaveRequest.setType(String.valueOf(updateLRTypeCombo.getSelectedItem()));
+
+                if(updateLRStatusCombo.getSelectedItem()!="")
+                    leaveRequest.setStatus(String.valueOf(updateLRStatusCombo.getSelectedItem()));
+
+                lrService.updateLeaveRequest(id,leaveRequest);
+
+                updateLRReasonTextArea.setText("");
+                updateLRStartDayCombo.setSelectedIndex(0);
+                updateLREndDayCombo.setSelectedIndex(0);
+                updateLRTypeCombo.setSelectedIndex(0);
+                updateLRStatusCombo.setSelectedIndex(0);
+
+                setUp_leaveRequestsTable();
+            }
+        });
+
     }
 
     private void setUp_employeesTable(){
@@ -282,11 +476,11 @@ public class adminForm {
         };
 
         //setting header
-        leaveRequestsTableModel.setColumnIdentifiers(new String[]{"1","ne znam","neki razlog"});
+        leaveRequestsTableModel.setColumnIdentifiers(new String[]{"ID","Employee ID","Manager ID","Reason","Start date","End date","Type","Status"});
 
         //setting data
-        //for each leave request add to table model
-        leaveRequestsTableModel.addRow(new String[]{"1","ne znam","neki razlog"});
+        for (int i = 0; i<leaveRequestList.size(); i++)
+            leaveRequestsTableModel.addRow(leaveRequestList.get(i).toStringArray());//add every employee to model to separate row
 
         leaveRequestsTable.setModel(leaveRequestsTableModel);//assign the model to the table component
 
@@ -298,19 +492,19 @@ public class adminForm {
         //FONT SET IN setUpFont()
     }
 
-    private void setUpRadioButtons(){
-        adminRadio.addActionListener(e -> {//hide manager_id input field when admin selected
-            manager_idCombo.addItem("");
-            manager_idCombo.setSelectedItem("");
-            manager_idCombo.setVisible(false);
+    private void setUpRadioBehaviour(){
+        inputAdminRadio.addActionListener(e -> {//hide manager_id input field when admin selected
+            inputManagerIDCombo.addItem("");
+            inputManagerIDCombo.setSelectedItem("");
+            inputManagerIDCombo.setVisible(false);
         });
-        employeeRadio.addActionListener(e -> {
-            manager_idCombo.removeItem("");
-            manager_idCombo.setVisible(true);
+        inputEmployeeRadio.addActionListener(e -> {
+            inputManagerIDCombo.removeItem("");
+            inputManagerIDCombo.setVisible(true);
         });//redraw when employee selected
-        managerRadio.addActionListener(e -> {
-            manager_idCombo.removeItem("");
-            manager_idCombo.setVisible(true);
+        inputManagerRadio.addActionListener(e -> {
+            inputManagerIDCombo.removeItem("");
+            inputManagerIDCombo.setVisible(true);
         });//redraw when manager selected
 
         //FONT SET IN setUpFont()
@@ -325,7 +519,138 @@ public class adminForm {
         for (Employee employee : employeesList)
             if (Objects.equals(employee.getRole(), Employee.ROLE_MANAGER)) comboBoxModel.addElement(employee.getId());
 
-        manager_idCombo.setModel(comboBoxModel);
+        inputManagerIDCombo.setModel(comboBoxModel);
+
+        comboBoxModel_update = new DefaultComboBoxModel<>();
+        comboBoxModel_update.addElement("");
+
+        for(Employee employee : employeesList)
+            if(Objects.equals(employee.getRole(), Employee.ROLE_MANAGER)) comboBoxModel_update.addElement(employee.getId());
+
+        updateEmpManagerIDCombo.setModel(comboBoxModel_update);
+    }
+
+    //different months and years should have different amount of days
+    private void setUpDaysInMonth(){
+
+        //start date change listener
+        ActionListener startDateChange = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //31-day months
+                DefaultComboBoxModel comboBoxModel31 = new DefaultComboBoxModel<String>();
+                String[] days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+                comboBoxModel31.addAll(java.util.List.of(days));
+
+                //30-day months
+                DefaultComboBoxModel comboBoxModel30 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"};
+                comboBoxModel30.addAll(java.util.List.of(days));
+
+                //regular february
+                DefaultComboBoxModel comboBoxModel28 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"};
+                comboBoxModel28.addAll(java.util.List.of(days));
+
+                //leap year february
+                DefaultComboBoxModel comboBoxModel29 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"};
+                comboBoxModel29.addAll(List.of(days));
+
+                //depending on selected month
+                switch(String.valueOf(updateLRStartMonthCombo.getSelectedItem())){
+                    //give 31 days if these months
+                    case "1":
+                    case "3":
+                    case "5":
+                    case "7":
+                    case "8":
+                    case "10":
+                    case "12":updateLRStartDayCombo.setModel(comboBoxModel31);
+                        break;
+
+                    //give 30 days if these months
+                    case "4":
+                    case "6":
+                    case "9":
+                    case "11":updateLRStartDayCombo.setModel(comboBoxModel30);
+                        break;
+
+                    //give 29 days to february if leap year, otherwise give 28
+                    case "2":
+                        int year = Integer.parseInt(String.valueOf(updateLRStartYearCombo.getSelectedItem()));//year as int
+
+                        if(year%4==0 || (year%100==0 && year%400==0))
+                            updateLRStartDayCombo.setModel(comboBoxModel29);
+                        else
+                            updateLRStartDayCombo.setModel(comboBoxModel28);
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + String.valueOf(updateLRStartMonthCombo.getSelectedItem()));
+                }
+            }
+        };
+        //adjusts amount of days in combo box when month or year is changed
+        updateLRStartMonthCombo.addActionListener(startDateChange);
+        updateLRStartYearCombo.addActionListener(startDateChange);
+
+        //end date change listener
+        ActionListener endMonthChange = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                //31-day months
+                DefaultComboBoxModel comboBoxModel31 = new DefaultComboBoxModel<String>();
+                String[] days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+                comboBoxModel31.addAll(java.util.List.of(days));
+
+                //30-day months
+                DefaultComboBoxModel comboBoxModel30 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"};
+                comboBoxModel30.addAll(java.util.List.of(days));
+
+                //regular february
+                DefaultComboBoxModel comboBoxModel28 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"};
+                comboBoxModel28.addAll(java.util.List.of(days));
+
+                //leap year february
+                DefaultComboBoxModel comboBoxModel29 = new DefaultComboBoxModel<String>();
+                days = new String[]{"","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"};
+                comboBoxModel29.addAll(List.of(days));
+
+                switch(String.valueOf(updateLREndMonthCombo.getSelectedItem())){
+                    case "1":
+                    case "3":
+                    case "5":
+                    case "7":
+                    case "8":
+                    case "10":
+                    case "12":updateLREndDayCombo.setModel(comboBoxModel31);
+                        break;
+
+                    case "4":
+                    case "6":
+                    case "9":
+                    case "11":updateLREndDayCombo.setModel(comboBoxModel30);
+                        break;
+
+                    case "2":int year = Integer.parseInt(String.valueOf(updateLREndYearCombo.getSelectedItem()));
+                        if(year%4==0 || (year%100==0 && year%400==0))updateLREndDayCombo.setModel(comboBoxModel29);
+                        else updateLREndDayCombo.setModel(comboBoxModel28);
+                        break;
+
+                    case null:
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + String.valueOf(updateLREndMonthCombo.getSelectedItem()));
+                }
+            }
+        };
+        //adjusts amount of days in combo box when month or year is changed
+        updateLREndMonthCombo.addActionListener(endMonthChange);
+        updateLREndYearCombo.addActionListener(endMonthChange);
     }
 
 }

@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.util.Arrays;
 
 public class loginForm {
+    //COMPONENTS
     private JPanel loginPanel;
     private JTextField usernameTextField;
     private JPasswordField passwordField;
@@ -21,10 +22,32 @@ public class loginForm {
     private JLabel passwordLabel;
     private JButton logInButton;
 
-    public loginForm(JFrame frame) {
-        setUpButtonResponsivity();
-        setUpKeyListener();
+    //SERVICES
+    private final EmployeeService empService = new EmployeeService();
 
+    public loginForm(JFrame frame) {
+        setUpFont();
+        setUpButtonResponsivity();
+        setUpEnterKeyListener();
+        setUpButtonBehaviour();
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {
+        }
+
+        JFrame frame = new JFrame("loginForm");
+        frame.setContentPane(new loginForm(frame).loginPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+    }
+
+    private void setUpFont(){
         FlatJetBrainsMonoFont.install();//custom font, 3 sizes
         Font customFont20 = new Font("JetBrains Mono", Font.PLAIN, 20);
         Font customFont18 = new Font("JetBrains Mono", Font.PLAIN, 18);
@@ -35,9 +58,64 @@ public class loginForm {
         usernameTextField.setFont(customFont18);
         passwordField.setFont(customFont18);
         logInButton.setFont(customFont18);
+    }
 
-        EmployeeService empService = new EmployeeService();//service to Employees collection
+    private void setUpButtonResponsivity() {
+        MouseListener buttonResponse = new MouseListener() {
 
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(53, 116, 240));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55, 57, 60));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(50, 53, 55));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JButton source = (JButton) e.getSource();
+                source.setBackground(new Color(55, 57, 60));
+            }
+        };
+
+        logInButton.addMouseListener(buttonResponse);
+
+    }
+
+    private void setUpEnterKeyListener(){
+        KeyListener enter = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getExtendedKeyCode() == KeyEvent.getExtendedKeyCodeForChar(KeyEvent.VK_ENTER)) logInButton.doClick();
+            }
+        };
+        usernameTextField.addKeyListener(enter);
+        passwordField.addKeyListener(enter);
+    }
+
+    private void setUpButtonBehaviour(){
         logInButton.addActionListener(new ActionListener() {//login button pressed
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,7 +154,7 @@ public class loginForm {
                             break;
                         case "manager":
                             //open leaveRequestReview/employeeList/leaveRequestList form
-                            managerForm.main(null);
+                            managerForm.main(employee.toStringArray());
                             break;
                         case "admin":
                             //open input/employeeList/leaveRequestList form
@@ -90,75 +168,5 @@ public class loginForm {
         });
     }
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {
-        }
-
-        JFrame frame = new JFrame("loginForm");
-        frame.setContentPane(new loginForm(frame).loginPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-    }
-
-
-    private void setUpButtonResponsivity() {
-        MouseListener buttonResponse = new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                JButton source = (JButton) e.getSource();
-                source.setBackground(new Color(53, 116, 240));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                JButton source = (JButton) e.getSource();
-                source.setBackground(new Color(55, 57, 60));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                JButton source = (JButton) e.getSource();
-                source.setBackground(new Color(50, 53, 55));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                JButton source = (JButton) e.getSource();
-                source.setBackground(new Color(55, 57, 60));
-            }
-        };
-
-        logInButton.addMouseListener(buttonResponse);
-
-    }
-
-    public void setUpKeyListener(){
-        KeyListener enter = new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getExtendedKeyCode() == KeyEvent.getExtendedKeyCodeForChar(KeyEvent.VK_ENTER)) logInButton.doClick();
-            }
-        };
-        usernameTextField.addKeyListener(enter);
-        passwordField.addKeyListener(enter);
-    }
 }
 
